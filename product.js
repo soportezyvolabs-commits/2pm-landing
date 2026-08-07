@@ -153,9 +153,31 @@
     st.innerHTML="#"+ID+"{display:block!important;width:100%!important;margin:12px 0!important}#"+ID+" .expert-card{width:100%;max-width:520px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:1px solid rgba(0,0,0,.08);border-radius:12px;background:#fafafa;box-shadow:0 1px 4px rgba(0,0,0,.04);box-sizing:border-box;position:relative}#"+ID+" .expert-mp{position:absolute;top:12px;right:14px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1;white-space:nowrap;text-align:right}#"+ID+" .expert-mp-code{font-size:11px;font-weight:800;color:#111}#"+ID+" .expert-mp-label{font-size:9px;font-weight:600;color:#888}#"+ID+" .expert-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;flex:0 0 auto;border:2px solid #e5e5e5;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#888}#"+ID+" .expert-body{display:flex;flex-direction:column;gap:5px;flex:1}#"+ID+" .expert-header{display:flex;flex-direction:column;gap:2px;padding-right:95px}#"+ID+" .expert-name{margin:0;font-size:13px;font-weight:800;color:#111}#"+ID+" .expert-role{margin:0;font-size:11px;font-weight:600;color:#666}#"+ID+" .expert-quote{margin:0;font-size:12.5px;font-weight:500;color:#333;font-style:italic}#"+ID+" .expert-badge{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-size:10px;font-weight:700;color:#444}#"+ID+" .ebdg svg{width:13px;height:13px;color:#1a73e8}";
     document.head.appendChild(st);
     var verSvg='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.09 14.41l-3.5-3.5 1.41-1.41 2.09 2.09 5.18-5.18 1.41 1.41-6.59 6.59z"/></svg>';
-    var avHTML=cfg.foto&&cfg.foto.indexOf("PEGAR")===-1?'<img class="expert-avatar" src="'+cfg.foto+'" alt="'+cfg.nombre+'">':"<div class="expert-avatar">"+cfg.nombre.charAt(0).toUpperCase()+"</div>";
+    var avHTML;
+    if(cfg.foto&&cfg.foto.indexOf("PEGAR")===-1){
+      avHTML=document.createElement("img");
+      avHTML.className="expert-avatar";
+      avHTML.src=cfg.foto;
+      avHTML.alt=cfg.nombre;
+    } else {
+      avHTML=document.createElement("div");
+      avHTML.className="expert-avatar";
+      avHTML.textContent=cfg.nombre.charAt(0).toUpperCase();
+    }
     var box=document.createElement("div"); box.id=ID;
-    box.innerHTML='<div class="expert-card"><div class="expert-mp"><span class="expert-mp-code">'+cfg.matricula+'</span><span class="expert-mp-label">'+cfg.matriculaDesc+'</span></div>'+avHTML+'<div class="expert-body"><div class="expert-header"><p class="expert-name">'+cfg.nombre+'</p><p class="expert-role">'+cfg.profesion+'</p></div><p class="expert-quote">&#x201C;'+cfg.mensaje+'&#x201D;</p><span class="expert-badge">'+verSvg+' Profesional verificado</span></div></div>';
+    var card=document.createElement("div"); card.className="expert-card";
+    var mp=document.createElement("div"); mp.className="expert-mp";
+    mp.innerHTML="<span class=\"expert-mp-code\">"+cfg.matricula+"</span><span class=\"expert-mp-label\">"+cfg.matriculaDesc+"</span>";
+    var body=document.createElement("div"); body.className="expert-body";
+    var header=document.createElement("div"); header.className="expert-header";
+    header.innerHTML="<p class=\"expert-name\">"+cfg.nombre+"</p><p class=\"expert-role\">"+cfg.profesion+"</p>";
+    var quote=document.createElement("p"); quote.className="expert-quote"; quote.textContent="“"+cfg.mensaje+"”";
+    var badge=document.createElement("span"); badge.className="expert-badge"; badge.innerHTML=verSvg+" Profesional verificado";
+    card.appendChild(mp);
+    if(avHTML.tagName) card.appendChild(avHTML); else card.innerHTML+=avHTML;
+    body.appendChild(header); body.appendChild(quote); body.appendChild(badge);
+    card.appendChild(body);
+    box.appendChild(card);
     anchor.insertAdjacentElement("afterend",box);
     return true;
   }
