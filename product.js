@@ -230,17 +230,14 @@
     var faqsBlock=document.getElementById("wigy-faqs-form"); if(!faqsBlock) return false;
     var logos=window.WIGY_CONFIG&&window.WIGY_CONFIG.logosMediaTicker; if(!logos||!logos.length) return false;
     var st=document.createElement("style");
-    st.innerHTML="#"+ID+"{width:100%;margin:0 auto;padding:28px 0 36px;overflow:hidden}#"+ID+" .media-ticker-label{text-align:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#999;margin-bottom:12px}#"+ID+" .media-ticker-wrap{overflow:hidden;width:100%;mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%);-webkit-mask-image:linear-gradient(to right,transparent 0%,black 8%,black 92%,transparent 100%)}#"+ID+" .media-ticker-track{display:flex;align-items:center;gap:55px;width:max-content;animation:mtscroll 15s linear infinite}#"+ID+" .media-ticker-track.run{animation-play-state:running}#"+ID+" .media-ticker-track img{height:26px;width:auto;object-fit:contain;filter:grayscale(100%) opacity(.45);transition:filter .3s;flex:0 0 auto}#"+ID+" .media-ticker-track img:hover{filter:none}@keyframes mtscroll{to{transform:translateX(calc(-50% - 27px))}}";
+    st.innerHTML="#"+ID+"{width:100%;padding:20px 0;overflow:hidden;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin:8px 0}#"+ID+" .mt-label{text-align:center;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:2px;color:#ccc;margin-bottom:14px}#"+ID+" .mt-wrap{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%)}#"+ID+" .mt-track{display:flex;align-items:center;gap:48px;width:max-content;animation:wigyScroll 20s linear infinite;will-change:transform}#"+ID+" .mt-track:hover{animation-play-state:paused}#"+ID+" .mt-track img{height:20px;width:auto;object-fit:contain;filter:grayscale(100%) opacity(0.35);transition:opacity .3s;flex:0 0 auto;display:block}#"+ID+" .mt-track img:hover{opacity:0.7}@keyframes wigyScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}";
     document.head.appendChild(st);
-    var imgs="";for(var r=0;r<8;r++){for(var i=0;i<logos.length;i++){imgs+='<img src="'+logos[i].src+'" alt="'+(logos[i].alt||'')+'" draggable="false">';}}
+    var imgs="";var REPS=6;for(var r=0;r<REPS;r++){for(var i=0;i<logos.length;i++){imgs+='<img src="'+logos[i].src+'" alt="'+(logos[i].alt||'')+'" draggable="false" loading="eager">';}}
     var w=document.createElement("div"); w.id=ID;
-    w.innerHTML='<p class="media-ticker-label">Visto en medios</p><div class="media-ticker-wrap"><div class="media-ticker-track">'+imgs+"</div></div>";
+    w.innerHTML='<p class="mt-label">Visto en medios</p><div class="mt-wrap"><div class="mt-track">'+imgs+"</div></div>";
     faqsBlock.insertAdjacentElement("afterend",w);
     var track=w.querySelector(".mtt");
-    var loaded=0;var imgs2=track.querySelectorAll("img");
-    function check(){loaded++;if(loaded>=logos.length)track.classList.add("run");}
-    for(var j=0;j<Math.min(logos.length,imgs2.length);j++){if(imgs2[j].complete)check();else{imgs2[j].onload=imgs2[j].onerror=check;}}
-    setTimeout(function(){track.classList.add("run");},3000);
+    // animacion siempre activa via CSS
     return true;
   }
   var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=120)clearInterval(t);},200);
