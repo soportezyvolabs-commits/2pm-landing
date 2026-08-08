@@ -48,12 +48,17 @@
     if(document.getElementById(WID)) return;
     var form=document.querySelector(".js-product-form")||document.getElementById("product_form"); if(!form) return;
     var st=document.createElement("style");
-    st.innerHTML=".benefits-list{list-style:none!important;padding:0!important;margin:10px 0 20px 0!important;display:flex;flex-direction:column;gap:6px}.bl li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#333;line-height:1.4}.benefit-icon{flex:0 0 auto;width:18px;height:18px;margin-top:2px}.benefit-text{font-weight:500}";
+    st.innerHTML=".benefits-list{list-style:none!important;padding:0!important;margin:14px 0 22px 0!important;display:flex;flex-direction:column;gap:8px}.benefits-list li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:#444;line-height:1.5;padding:11px 13px;background:#f6fbf7;border:1px solid rgba(74,178,90,.14);border-radius:10px;box-sizing:border-box}.benefit-icon{flex:0 0 auto;width:19px;height:19px;margin-top:1px}.benefit-text{font-weight:500}.benefit-hook{font-weight:800;color:#111}";
     document.head.appendChild(st);
     var svg='<svg class="benefit-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1L1 4.5v4C1 12.1 4.1 15.4 8 16c3.9-.6 7-3.9 7-7.5v-4L8 1zm-1 10.4l-2.5-2.5 1-1 1.5 1.5 3.7-3.7 1 1-5.7 5.7z" fill="#4ab25a"/></svg>';
-    var items=["Chau bajon. L-Teanina y L-Tirosina actuan sobre el sistema dopaminergico para mantener el foco sin ansiedad.","Energia que dura. Rhodiola Rosea y Ginseng Panax sostienen el rendimiento mental de corrido durante horas.","Sin crash, sin dependencia. Cafeina natural de yerba mate de liberacion gradual + Vitaminas B6 y B12.","Sin azucar ni nicotina. Apto para cualquier estilo de alimentacion. Sin efectos adversos ni dependencia."];
+    var items=[
+      {hook:"Chau bajon post almuerzo.",text:"L-Teanina y L-Tirosina: foco real, sin ansiedad."},
+      {hook:"Energia que dura horas.",text:"Rhodiola Rosea y Ginseng sostienen tu rendimiento sin picos."},
+      {hook:"Sin crash, sin dependencia.",text:"Cafeina natural de yerba mate, de liberacion gradual."},
+      {hook:"Sin azucar ni nicotina.",text:"Apto para cualquier estilo de alimentacion."}
+    ];
     var w=document.createElement("div"); w.id=WID;
-    w.innerHTML='<ul class="benefits-list">'+items.map(function(t){return'<li>'+svg+'<span class="benefit-text">'+t+'</span></li>';}).join('')+'</ul>';
+    w.innerHTML='<ul class="benefits-list">'+items.map(function(it){return'<li>'+svg+'<span class="benefit-text"><span class="benefit-hook">'+it.hook+'</span> '+it.text+'</span></li>';}).join('')+'</ul>';
     form.parentNode.insertBefore(w,form);
   }
   var tries=0,t=setInterval(function(){tries++;mount();if(document.getElementById(WID)||tries>=60)clearInterval(t);},250);
