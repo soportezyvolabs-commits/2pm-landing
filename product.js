@@ -67,6 +67,27 @@
 
 (function() {
   if (window.WIGY_SLUG_BLOCK) return;
+  var ID="wigy-product-gallery";
+  function mount() {
+    if(document.getElementById(ID)) return true;
+    var bl=document.getElementById("wigy-shopify-benefits"); if(!bl) return false;
+    var imgs=window.WIGY_CONFIG&&window.WIGY_CONFIG.carruselImagenes;
+    if(!imgs||!imgs.length) return true;
+    var st=document.createElement("style");
+    st.innerHTML="#"+ID+"{width:100%;clear:both;font-family:inherit;padding:4px 0 16px}#"+ID+" .pg-track{display:flex;overflow-x:auto;gap:10px;padding:0 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}#"+ID+" .pg-track::-webkit-scrollbar{display:none}#"+ID+" .pg-item{flex:0 0 76%;max-width:280px;scroll-snap-align:start;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#f4f4f4;box-shadow:0 3px 14px rgba(0,0,0,.08)}#"+ID+" .pg-item img{width:100%;height:100%;object-fit:cover;display:block}#"+ID+" .pg-hint{text-align:center;font-size:11px;color:#bbb;margin:0}";
+    document.head.appendChild(st);
+    var itemsHTML=imgs.map(function(im){return'<div class="pg-item"><img src="'+im.src+'" alt="'+(im.alt||"2PM ZYVO Labs")+'" loading="lazy"></div>';}).join("");
+    var w=document.createElement("div"); w.id=ID;
+    w.innerHTML='<div class="pg-track">'+itemsHTML+'</div><p class="pg-hint">← desliza para ver más →</p>';
+    bl.insertAdjacentElement("beforebegin",w);
+    return true;
+  }
+  var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=100)clearInterval(t);},150);
+})();
+
+
+(function() {
+  if (window.WIGY_SLUG_BLOCK) return;
   var ID = "wigy-premium-bundles";
   var inject = function() {
     if(document.getElementById(ID)) return;
@@ -206,6 +227,58 @@
     var w=document.createElement("div"); w.id=ID;
     w.innerHTML='<div class="ct-inner"><h2>Por que elegir 2PM?</h2><p class="ct-subtitle">Una formula pensada para sostener tu rendimiento post almuerzo, sin los efectos que ya conoces del cafe o los energizantes.</p><div class="ct-table"><div class="ct-head"><div class="ct-head-cell"></div><div class="ct-brand"><span class="ct-brand-name">2PM</span></div><div class="ct-head-cell"><span class="ct-other-name">OTRAS</span></div></div>'+rowsHTML+'</div></div>';
     sol.insertAdjacentElement("beforebegin",w);
+    return true;
+  }
+  var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=150)clearInterval(t);},150);
+})();
+
+
+(function() {
+  if (window.WIGY_SLUG_BLOCK) return;
+  var ID="wigy-cta-table";
+  function mount() {
+    if(document.getElementById(ID)) return true;
+    var table=document.getElementById("wigy-comparison-table"); if(!table) return false;
+    if(!document.getElementById("wigy-cta-css")){
+      var st=document.createElement("style"); st.id="wigy-cta-css";
+      st.innerHTML=".wigy-cta-block{width:100%;clear:both;text-align:center;padding:8px 20px 34px;font-family:inherit;background:#fff}.wigy-cta-block p{font-size:14px;color:#666;margin:0 0 14px;font-weight:600}.wigy-cta-block button{background:linear-gradient(135deg,#1a7a40 0%,#27ae60 50%,#2ecc71 100%)!important;color:#fff!important;border:none!important;border-radius:12px!important;font-family:inherit!important;font-size:15px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.8px!important;padding:15px 18px!important;box-shadow:0 8px 24px rgba(39,174,96,.35)!important;width:72%!important;max-width:420px!important;box-sizing:border-box!important;cursor:pointer!important}@keyframes wigyCtaPulse{0%,100%{box-shadow:0 4px 14px rgba(74,178,90,.12)}50%{box-shadow:0 4px 26px rgba(74,178,90,.55)}}#wigy-premium-bundles.wigy-cta-highlight{animation:wigyCtaPulse 1s ease-in-out 2}";
+      document.head.appendChild(st);
+    }
+    var w=document.createElement("div"); w.id=ID; w.className="wigy-cta-block";
+    w.innerHTML='<p>¿Ya viste por que 2PM le gana a las otras opciones?</p><button type="button">Quiero mi 2PM ahora</button>';
+    w.querySelector("button").addEventListener("click",function(){
+      var target=document.getElementById("wigy-premium-bundles"); if(!target) return;
+      target.scrollIntoView({behavior:"smooth",block:"center"});
+      target.classList.add("wigy-cta-highlight");
+      setTimeout(function(){target.classList.remove("wigy-cta-highlight");},2200);
+    });
+    table.insertAdjacentElement("afterend",w);
+    return true;
+  }
+  var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=150)clearInterval(t);},150);
+})();
+
+
+(function() {
+  if (window.WIGY_SLUG_BLOCK) return;
+  var ID="wigy-cta-testimonials";
+  function mount() {
+    if(document.getElementById(ID)) return true;
+    var faqs=document.getElementById("wigy-faqs-form"); if(!faqs) return false;
+    if(!document.getElementById("wigy-cta-css")){
+      var st=document.createElement("style"); st.id="wigy-cta-css";
+      st.innerHTML=".wigy-cta-block{width:100%;clear:both;text-align:center;padding:8px 20px 34px;font-family:inherit;background:#fff}.wigy-cta-block p{font-size:14px;color:#666;margin:0 0 14px;font-weight:600}.wigy-cta-block button{background:linear-gradient(135deg,#1a7a40 0%,#27ae60 50%,#2ecc71 100%)!important;color:#fff!important;border:none!important;border-radius:12px!important;font-family:inherit!important;font-size:15px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.8px!important;padding:15px 18px!important;box-shadow:0 8px 24px rgba(39,174,96,.35)!important;width:72%!important;max-width:420px!important;box-sizing:border-box!important;cursor:pointer!important}@keyframes wigyCtaPulse{0%,100%{box-shadow:0 4px 14px rgba(74,178,90,.12)}50%{box-shadow:0 4px 26px rgba(74,178,90,.55)}}#wigy-premium-bundles.wigy-cta-highlight{animation:wigyCtaPulse 1s ease-in-out 2}";
+      document.head.appendChild(st);
+    }
+    var w=document.createElement("div"); w.id=ID; w.className="wigy-cta-block";
+    w.innerHTML='<p>Miles ya resolvieron su bajon de la tarde. ¿Vas vos?</p><button type="button">Ver mi pack ahora</button>';
+    w.querySelector("button").addEventListener("click",function(){
+      var target=document.getElementById("wigy-premium-bundles"); if(!target) return;
+      target.scrollIntoView({behavior:"smooth",block:"center"});
+      target.classList.add("wigy-cta-highlight");
+      setTimeout(function(){target.classList.remove("wigy-cta-highlight");},2200);
+    });
+    faqs.insertAdjacentElement("beforebegin",w);
     return true;
   }
   var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=150)clearInterval(t);},150);
