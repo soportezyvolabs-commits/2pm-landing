@@ -150,43 +150,65 @@
 (function() {
   if (window.WIGY_SLUG_BLOCK) return;
   var ID = "wigy-expert-endorsement";
-  function mount() {
-    if(document.getElementById(ID)) return;
-    var anchor=document.getElementById("wigy-garantia-box"); if(!anchor) return;
+  function inject() {
     var cfg=window.WIGY_CONFIG&&window.WIGY_CONFIG.experto; if(!cfg) return;
     var st=document.createElement("style");
-    st.innerHTML="#"+ID+"{display:block!important;width:100%!important;margin:12px 0!important}#"+ID+" .expert-card{width:100%;max-width:520px;margin:0 auto;display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:1px solid rgba(0,0,0,.08);border-radius:12px;background:#fafafa;box-shadow:0 1px 4px rgba(0,0,0,.04);box-sizing:border-box;position:relative}#"+ID+" .expert-mp{position:absolute;top:12px;right:14px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1;white-space:nowrap;text-align:right}#"+ID+" .expert-mp-code{font-size:11px;font-weight:800;color:#111}#"+ID+" .expert-mp-label{font-size:9px;font-weight:600;color:#888}#"+ID+" .expert-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;flex:0 0 auto;border:2px solid #e5e5e5;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#888}#"+ID+" .expert-body{display:flex;flex-direction:column;gap:5px;flex:1}#"+ID+" .expert-header{display:flex;flex-direction:column;gap:2px;padding-right:95px}#"+ID+" .expert-name{margin:0;font-size:13px;font-weight:800;color:#111}#"+ID+" .expert-role{margin:0;font-size:11px;font-weight:600;color:#666}#"+ID+" .expert-quote{margin:0;font-size:12.5px;font-weight:500;color:#333;font-style:italic}#"+ID+" .expert-badge{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-size:10px;font-weight:700;color:#444}#"+ID+" .ebdg svg{width:13px;height:13px;color:#1a73e8}";
+    st.innerHTML="#"+ID+"{width:100%;clear:both;font-family:inherit;background:#fafafa;padding:48px 20px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0}#"+ID+" .ee-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:40px}#"+ID+" .ee-media{flex:0 0 300px;max-width:300px}#"+ID+" .ee-img-wrap{width:100%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12);position:relative;background:linear-gradient(135deg,#eafaf0,#dff3e6)}#"+ID+" .ee-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}#"+ID+" .ee-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#4ab25a}#"+ID+" .ee-placeholder svg{width:52px;height:52px}#"+ID+" .ee-placeholder span{font-size:11px;font-weight:700;color:#5a8a6a;text-transform:uppercase;letter-spacing:.5px}#"+ID+" .ee-content{flex:1;min-width:0;text-align:left}#"+ID+" .ee-badge{display:inline-flex;align-items:center;gap:6px;background:#eafaf0;color:#237a44;font-size:11px;font-weight:800;padding:6px 12px;border-radius:99px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}#"+ID+" .ee-badge svg{width:13px;height:13px}#"+ID+" .ee-content h2{font-size:26px;font-weight:900;color:#111;margin:0 0 16px;line-height:1.25}#"+ID+" .ee-quote{margin:0 0 16px;padding:16px 18px;background:#fff;border-left:3px solid #4ab25a;border-radius:0 10px 10px 0;font-size:14.5px;font-style:italic;color:#333;line-height:1.6}#"+ID+" .ee-name{margin:0;font-size:15px;font-weight:800;color:#111}#"+ID+" .ee-role{margin:2px 0 0;font-size:12.5px;font-weight:600;color:#666}#"+ID+" .ee-mp{margin:2px 0 20px;font-size:11.5px;font-weight:600;color:#999}#"+ID+" .ee-points{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}#"+ID+" .ee-points li{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:#444;line-height:1.5}#"+ID+" .ee-point-icon{flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#eafaf0;display:flex;align-items:center;justify-content:center;color:#4ab25a}#"+ID+" .ee-point-icon svg{width:16px;height:16px}#"+ID+" .ee-points strong{color:#111;font-weight:800}@media(max-width:768px){#"+ID+" .ee-inner{flex-direction:column;gap:24px}#"+ID+" .ee-media{flex:0 0 auto;max-width:240px;width:100%}#"+ID+" .ee-content h2{font-size:21px}}";
     document.head.appendChild(st);
-    var verSvg='<svg width="11" height="11" viewBox="0 0 24 24" fill="#1a73e8"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.09 14.41l-3.5-3.5 1.41-1.41 2.09 2.09 5.18-5.18 1.41 1.41-6.59 6.59z"/></svg>';
-    var avHTML;
+    var badgeSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/><polyline points="9 12 11 14 15 10"/></svg>';
+    var mediaHTML;
     if(cfg.foto&&cfg.foto.indexOf("PEGAR")===-1){
-      avHTML=document.createElement("img");
-      avHTML.className="expert-avatar";
-      avHTML.src=cfg.foto;
-      avHTML.alt=cfg.nombre;
+      mediaHTML='<img src="'+cfg.foto+'" alt="'+cfg.nombre+'">';
     } else {
-      avHTML=document.createElement("div");
-      avHTML.className="expert-avatar";
-      avHTML.textContent=cfg.nombre.charAt(0).toUpperCase();
+      var docSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v4a1 1 0 001 1h4a1 1 0 001-1V2"/><path d="M6 4h12a2 2 0 012 2v13a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M12 11v6M9 14h6"/></svg>';
+      mediaHTML='<div class="ee-placeholder">'+docSvg+'<span>Foto proximamente</span></div>';
     }
-    var box=document.createElement("div"); box.id=ID;
-    var card=document.createElement("div"); card.className="expert-card";
-    var mp=document.createElement("div"); mp.className="expert-mp";
-    mp.innerHTML="<span class=\"expert-mp-code\">"+cfg.matricula+"</span><span class=\"expert-mp-label\">"+cfg.matriculaDesc+"</span>";
-    var body=document.createElement("div"); body.className="expert-body";
-    var header=document.createElement("div"); header.className="expert-header";
-    header.innerHTML="<p class=\"expert-name\">"+cfg.nombre+"</p><p class=\"expert-role\">"+cfg.profesion+"</p>";
-    var quote=document.createElement("p"); quote.className="expert-quote"; quote.textContent="“"+cfg.mensaje+"”";
-    var badge=document.createElement("span"); badge.className="expert-badge"; badge.innerHTML=verSvg+" Profesional verificado";
-    card.appendChild(mp);
-    if(avHTML.tagName) card.appendChild(avHTML); else card.innerHTML+=avHTML;
-    body.appendChild(header); body.appendChild(quote); body.appendChild(badge);
-    card.appendChild(body);
-    box.appendChild(card);
-    anchor.insertAdjacentElement("afterend",box);
+    var pointsSvgs=[
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 9.4-8 10-4.6-.6-8-5-8-10V6l8-4z"/></svg>'
+    ];
+    var points=[
+      {t:"Accion focalizada:",d:"actua directo sobre el sistema dopaminergico para foco real en minutos."},
+      {t:"Se disuelve al instante:",d:"sabor suave, sin grumos ni residuos, listo en un vaso de agua fria."},
+      {t:"Compra sin riesgo:",d:"respaldado con garantia de satisfaccion de 30 dias."}
+    ];
+    var pointsHTML=points.map(function(p,i){return'<li><span class="ee-point-icon">'+pointsSvgs[i]+'</span><div><strong>'+p.t+'</strong> '+p.d+'</div></li>';}).join('');
+    var w=document.createElement("div"); w.id=ID;
+    w.innerHTML='<div class="ee-inner"><div class="ee-media"><div class="ee-img-wrap">'+mediaHTML+'</div></div><div class="ee-content"><span class="ee-badge">'+badgeSvg+' Experto verificado</span><h2>Rendimiento real, avalado por profesionales</h2><blockquote class="ee-quote">“'+cfg.mensaje+'”</blockquote><p class="ee-name">'+cfg.nombre+'</p><p class="ee-role">'+cfg.profesion+'</p><p class="ee-mp">'+cfg.matricula+' · '+cfg.matriculaDesc+'</p><ul class="ee-points">'+pointsHTML+'</ul></div></div>';
+    var prob=document.getElementById("wigy-problem-section");
+    if(prob){prob.insertAdjacentElement("beforebegin",w);}
+  }
+  var tries=0,t=setInterval(function(){tries++;if(document.getElementById("wigy-problem-section")){clearInterval(t);inject();}if(tries>=120)clearInterval(t);},150);
+})();
+
+
+(function() {
+  if (window.WIGY_SLUG_BLOCK) return;
+  var ID="wigy-comparison-table";
+  function mount() {
+    if(document.getElementById(ID)) return true;
+    var sol=document.getElementById("wigy-solution-section"); if(!sol) return false;
+    var st=document.createElement("style");
+    st.innerHTML="#"+ID+"{width:100%;clear:both;font-family:inherit;background:#fff;padding:48px 20px}#"+ID+" .ct-inner{max-width:640px;margin:0 auto;text-align:center}#"+ID+" .ct-inner h2{font-size:26px;font-weight:900;color:#111;margin:0 0 12px;line-height:1.25}#"+ID+" .ct-subtitle{font-size:15px;color:#555;line-height:1.6;margin:0 auto 28px;max-width:520px}#"+ID+" .ct-table{border:1px solid #eee;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05)}#"+ID+" .ct-head{display:grid;grid-template-columns:1.6fr 1fr 1fr;align-items:stretch;background:#fafafa;border-bottom:1px solid #eee}#"+ID+" .ct-head-cell{padding:14px 10px;display:flex;align-items:center;justify-content:center}#"+ID+" .ct-brand{background:#f0fdf4;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-left:1px solid #eee;border-right:1px solid #eee}#"+ID+" .ct-brand-name{font-size:13px;font-weight:900;color:#111;letter-spacing:.5px}#"+ID+" .ct-other-name{font-size:12px;font-weight:800;color:#aaa;letter-spacing:.5px;text-align:center}#"+ID+" .ct-row{display:grid;grid-template-columns:1.6fr 1fr 1fr;align-items:center;border-bottom:1px solid #f2f2f2}#"+ID+" .ct-row:last-child{border-bottom:none}#"+ID+" .ct-row:nth-child(odd){background:#fcfdfc}#"+ID+" .ct-crit{padding:14px 14px;text-align:left;font-size:13px;font-weight:700;color:#222;line-height:1.4}#"+ID+" .ct-cell{padding:14px 8px;display:flex;align-items:center;justify-content:center}#"+ID+" .ct-cell.ct-yes{background:rgba(74,178,90,.05)}#"+ID+" .ct-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}#"+ID+" .ct-yes .ct-icon{background:#4ab25a;color:#fff}#"+ID+" .ct-no .ct-icon{background:#eee;color:#aaa}#"+ID+" .ct-icon svg{width:13px;height:13px}@media(max-width:768px){#"+ID+" .ct-inner h2{font-size:21px}#"+ID+" .ct-crit{font-size:11.5px;padding:12px 8px}#"+ID+" .ct-brand-name,#"+ID+" .ct-other-name{font-size:11px}}";
+    document.head.appendChild(st);
+    var checkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    var xSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    var rows=[
+      "Energia sostenida sin bajon post almuerzo",
+      "Ingredientes con respaldo: L-Teanina, Rhodiola, Ginseng",
+      "Cafeina de yerba mate, liberacion gradual",
+      "Sin crash ni nerviosismo",
+      "Sin azucar ni nicotina",
+      "Garantia de satisfaccion de 30 dias"
+    ];
+    var rowsHTML=rows.map(function(r){return'<div class="ct-row"><div class="ct-crit">'+r+'</div><div class="ct-cell ct-yes"><span class="ct-icon">'+checkSvg+'</span></div><div class="ct-cell ct-no"><span class="ct-icon">'+xSvg+'</span></div></div>';}).join('');
+    var w=document.createElement("div"); w.id=ID;
+    w.innerHTML='<div class="ct-inner"><h2>Por que elegir 2PM?</h2><p class="ct-subtitle">Una formula pensada para sostener tu rendimiento post almuerzo, sin los efectos que ya conoces del cafe o los energizantes.</p><div class="ct-table"><div class="ct-head"><div class="ct-head-cell"></div><div class="ct-brand"><span class="ct-brand-name">2PM</span></div><div class="ct-head-cell"><span class="ct-other-name">OTRAS</span></div></div>'+rowsHTML+'</div></div>';
+    sol.insertAdjacentElement("beforebegin",w);
     return true;
   }
-  var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=80)clearInterval(t);},250);
+  var tries=0,t=setInterval(function(){tries++;if(mount()||tries>=150)clearInterval(t);},150);
 })();
 
 
@@ -235,7 +257,7 @@
     var faqsBlock=document.getElementById("wigy-faqs-form"); if(!faqsBlock) return false;
     var logos=window.WIGY_CONFIG&&window.WIGY_CONFIG.logosMediaTicker; if(!logos||!logos.length) return false;
     var st=document.createElement("style");
-    st.innerHTML="#"+ID+"{width:100%;padding:20px 0;overflow:hidden;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin:8px 0}#"+ID+" .mt-label{text-align:center;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:2px;color:#ccc;margin-bottom:14px}#"+ID+" .mt-wrap{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%)}#"+ID+" .mt-track{display:flex;align-items:center;gap:48px;width:max-content;animation:wigyScroll 20s linear infinite;will-change:transform}#"+ID+" .mt-track:hover{animation-play-state:paused}#"+ID+" .mt-track img{height:20px;width:auto;object-fit:contain;filter:grayscale(100%) opacity(0.35);transition:opacity .3s;flex:0 0 auto;display:block}#"+ID+" .mt-track img:hover{opacity:0.7}@keyframes wigyScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}";
+    st.innerHTML="#"+ID+"{width:100%;min-width:0;max-width:100%;padding:20px 0;overflow:hidden;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin:8px 0;box-sizing:border-box}#"+ID+" .mt-label{text-align:center;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:2px;color:#ccc;margin-bottom:14px}#"+ID+" .mt-wrap{position:relative;overflow:hidden;width:100%;min-width:0;max-width:100%;height:26px;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,#000 15%,#000 85%,transparent 100%)}#"+ID+" .mt-track{position:absolute;top:50%;left:0;transform:translateY(-50%);display:flex;align-items:center;gap:48px;width:max-content;animation:wigyScroll 20s linear infinite;will-change:transform}#"+ID+" .mt-track:hover{animation-play-state:paused}#"+ID+" .mt-track img{height:20px;width:auto;object-fit:contain;filter:grayscale(100%) opacity(0.35);transition:opacity .3s;flex:0 0 auto;display:block}#"+ID+" .mt-track img:hover{opacity:0.7}@keyframes wigyScroll{0%{transform:translateY(-50%) translateX(0)}100%{transform:translateY(-50%) translateX(-50%)}}";
     document.head.appendChild(st);
     var imgs="";var REPS=6;for(var r=0;r<REPS;r++){for(var i=0;i<logos.length;i++){imgs+='<img src="'+logos[i].src+'" alt="'+(logos[i].alt||'')+'" draggable="false" loading="eager">';}}
     var w=document.createElement("div"); w.id=ID;
@@ -353,7 +375,7 @@
   var ID="wigy-sticky-atc";
   if(document.getElementById(ID)) return;
   var ACCENT="#4ab25a";
-  var css="#"+ID+"{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,.06);box-shadow:0 -6px 24px rgba(0,0,0,.08);padding:10px 20px;display:flex;align-items:center;justify-content:center;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}#"+ID+".vis{transform:translateY(0)}#"+ID+" .sticky-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;max-width:580px}#"+ID+" .sticky-name{font-size:13px;font-weight:700;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#"+ID+" .sticky-price{font-size:17px;font-weight:900;color:"+ACCENT+"}#"+ID+" .sticky-btn{background:linear-gradient(135deg,"+ACCENT+",#27ae60);color:#fff;border:none;border-radius:99px;padding:12px 24px;font-size:14px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;flex-shrink:0}#"+ID+" .sb:active{transform:scale(.97)}@media(max-width:768px){#"+ID+"{padding:10px 14px}#"+ID+" .sticky-price{font-size:15px}#"+ID+" .sticky-btn{padding:10px 18px;font-size:13px}}";
+  var css="#"+ID+"{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid rgba(0,0,0,.06);box-shadow:0 -6px 24px rgba(0,0,0,.08);padding:10px 20px;display:flex;align-items:center;justify-content:center;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}#"+ID+".vis{transform:translateY(0)}#"+ID+" .sticky-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;max-width:580px}#"+ID+" .sticky-name{font-size:13px;font-weight:700;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#"+ID+" .sticky-price{font-size:17px;font-weight:900;color:"+ACCENT+"}#"+ID+" .sticky-btn{background:linear-gradient(135deg,"+ACCENT+",#27ae60);color:#fff;border:none;border-radius:99px;padding:12px 24px;font-size:14px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;flex-shrink:0}#"+ID+" .sticky-btn:active{transform:scale(.97)}@media(max-width:768px){#"+ID+"{padding:10px 14px}#"+ID+" .sticky-price{font-size:15px}#"+ID+" .sticky-btn{padding:10px 18px;font-size:13px}}";
   var st=document.createElement("style");st.innerHTML=css;document.head.appendChild(st);
   function mount(){
     if(document.getElementById(ID)) return true;
@@ -365,9 +387,9 @@
     var bar=document.createElement("div"); bar.id=ID;
     bar.innerHTML='<div class="sticky-inner"><div><div class="sticky-name">'+productName+'</div><div class="sticky-price">'+priceText+'</div></div><button class="sticky-btn">Quiero mi 2PM</button></div>';
     document.body.appendChild(bar);
-    bar.querySelector(".sb").addEventListener("click",function(){var b=document.querySelector(".js-prod-submit-form")||document.querySelector("button[name='add']");if(b)b.click();bar.classList.remove("vis");});
+    bar.querySelector(".sticky-btn").addEventListener("click",function(){var b=document.querySelector(".js-prod-submit-form")||document.querySelector("button[name='add']");if(b)b.click();bar.classList.remove("vis");});
     var bundles=document.getElementById("wigy-premium-bundles");
-    if(bundles){bundles.addEventListener("click",function(){setTimeout(function(){var s=bundles.querySelector(".kb-bar.sel .kb-p");if(s){var sp=bar.querySelector(".sp");if(sp)sp.textContent=s.textContent.trim();}},100);});}
+    if(bundles){bundles.addEventListener("click",function(){setTimeout(function(){var s=bundles.querySelector(".kb-bar.sel .kb-p");if(s){var sp=bar.querySelector(".sticky-price");if(sp)sp.textContent=s.textContent.trim();}},100);});}
     var obs=new IntersectionObserver(function(e){e.forEach(function(en){if(!en.isIntersecting){var r=realBtn.getBoundingClientRect();if(r.bottom<0)bar.classList.add("vis");else bar.classList.remove("vis");}else bar.classList.remove("vis");});},{threshold:0});
     obs.observe(realBtn);
     return true;
