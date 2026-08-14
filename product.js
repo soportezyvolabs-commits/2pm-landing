@@ -182,7 +182,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     pCol.style.cssText = "margin-top:0!important;padding-top:0!important;margin-bottom:15px!important;width:100%!important;max-width:640px!important";
     var obs = new IntersectionObserver(function(e, o) { e.forEach(function(en) { if (en.isIntersecting) { setTimeout(function() { w.classList.add("wigy-kb-in-view"); }, 300); o.unobserve(w); } }); }, { threshold: .3 });
     obs.observe(w);
-    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 14); window.WIGY_FULLBLEED(btn, 14); }
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 20); window.WIGY_FULLBLEED(btn, 20); }
     w.querySelectorAll(".wigy-kb-bar").forEach(function(el) {
       el.onclick = function() {
         w.querySelectorAll(".wigy-kb-bar").forEach(function(i) { i.classList.remove("wigy-sel"); });
@@ -251,7 +251,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = stockHTML + logosHTML + featsHTML;
     if (btn) { btn.insertAdjacentElement("afterend", w); } else { form.appendChild(w); }
-    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 14); }
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 20); }
     return true;
   }
   var tries = 0, t = setInterval(function() { tries++; if (mount() || tries >= 100) clearInterval(t); }, 200);
