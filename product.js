@@ -19,6 +19,60 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
   } catch (e) { window.WIGY_SLUG_BLOCK = true; }
 })();
 
+/* ==========================================================================
+   UTILIDAD COMPARTIDA: full-bleed real y AUTO-CORRECTIVO para mobile.
+   Fuerza que un elemento llegue de verdad al borde de la pantalla del celular
+   sin importar el padding/ancho/flex del contenedor padre del tema, y se
+   auto-verifica varias veces (la pagina real puede reacomodar el layout
+   despues de cargar fuentes/imagenes) para que NUNCA quede scroll lateral.
+   Ademas agrega un seguro global overflow-x:hidden por si algo se pasa.
+   ========================================================================== */
+(function() {
+  if (!document.getElementById("wigy-no-hscroll-css")) {
+    var noHS = document.createElement("style"); noHS.id = "wigy-no-hscroll-css";
+    noHS.innerHTML = "html,body{max-width:100%!important;overflow-x:hidden!important}";
+    document.head.appendChild(noHS);
+  }
+  window.WIGY_FULLBLEED = function(el, inset) {
+    if (!el) return;
+    function set(prop, val) { el.style.setProperty(prop, val, "important"); }
+    function apply() {
+      if (window.innerWidth > 768) {
+        ["width", "max-width", "margin-left", "margin-right", "box-sizing", "flex-shrink", "flex-grow", "flex-basis"].forEach(function(p) { el.style.removeProperty(p); });
+        return;
+      }
+      set("flex-shrink", "0"); set("flex-grow", "0"); set("flex-basis", "auto");
+      set("margin-left", "0px"); set("margin-right", "0px"); set("width", "auto"); set("max-width", "none");
+      var rect = el.getBoundingClientRect();
+      var vw = window.innerWidth;
+      var w2 = vw - inset * 2;
+      set("box-sizing", "border-box");
+      set("width", w2 + "px");
+      set("max-width", w2 + "px");
+      set("margin-left", (-rect.left + inset) + "px");
+      set("margin-right", "0px");
+      requestAnimationFrame(function() {
+        var r2 = el.getBoundingClientRect();
+        var curML = parseFloat(getComputedStyle(el).marginLeft) || 0;
+        if (r2.left < 0) { set("margin-left", (curML - r2.left) + "px"); }
+        else if (r2.left > inset + 1) { set("margin-left", (curML - (r2.left - inset)) + "px"); }
+        var r3 = el.getBoundingClientRect();
+        if (r3.right > vw + 0.5) {
+          var curW = parseFloat(getComputedStyle(el).width) || w2;
+          var newW = Math.max(60, curW - (r3.right - vw) - inset);
+          set("width", newW + "px"); set("max-width", newW + "px");
+        }
+      });
+    }
+    apply();
+    window.addEventListener("resize", apply);
+    window.addEventListener("orientationchange", apply);
+    window.addEventListener("load", apply);
+    setTimeout(apply, 500);
+    setTimeout(apply, 1500);
+  };
+})();
+
 (function() {
   if (window.WIGY_SLUG_BLOCK) return;
   var ID = "wigy-product-rating";
@@ -100,33 +154,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     pCol.style.cssText = "margin-top:0!important;padding-top:0!important;margin-bottom:15px!important;width:100%!important;max-width:640px!important";
     var obs = new IntersectionObserver(function(e, o) { e.forEach(function(en) { if (en.isIntersecting) { setTimeout(function() { w.classList.add("wigy-kb-in-view"); }, 300); o.unobserve(w); } }); }, { threshold: .3 });
     obs.observe(w);
-    // -- full-bleed real: fuerza ancho real de pantalla en mobile sin importar el padding/ancho
-    // del contenedor padre del tema (soluciona que los packs/boton no llegaran al borde) --
-    function fullBleed(el, inset) {
-      if (!el) return;
-      function set(prop, val) { el.style.setProperty(prop, val, "important"); }
-      function apply() {
-        if (window.innerWidth > 768) {
-          ["width", "max-width", "margin-left", "margin-right", "box-sizing", "flex-shrink", "flex-grow", "flex-basis"].forEach(function(p) { el.style.removeProperty(p); });
-          return;
-        }
-        // flex-shrink:0 primero: si el padre del tema es un flex/grid row, por defecto
-        // achica los items aunque tengan un ancho explicito - esto lo evita.
-        set("flex-shrink", "0"); set("flex-grow", "0"); set("flex-basis", "auto");
-        set("margin-left", "0px"); set("margin-right", "0px"); set("width", "auto"); set("max-width", "none");
-        var rect = el.getBoundingClientRect();
-        set("box-sizing", "border-box");
-        set("width", "calc(100vw - " + (inset * 2) + "px)");
-        set("max-width", "calc(100vw - " + (inset * 2) + "px)");
-        set("margin-left", (-rect.left + inset) + "px");
-        set("margin-right", "0px");
-      }
-      apply();
-      window.addEventListener("resize", apply);
-      window.addEventListener("orientationchange", apply);
-    }
-    fullBleed(w, 14);
-    fullBleed(btn, 14);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 14); window.WIGY_FULLBLEED(btn, 14); }
     w.querySelectorAll(".wigy-kb-bar").forEach(function(el) {
       el.onclick = function() {
         w.querySelectorAll(".wigy-kb-bar").forEach(function(i) { i.classList.remove("wigy-sel"); });
@@ -195,6 +223,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = stockHTML + logosHTML + featsHTML;
     if (btn) { btn.insertAdjacentElement("afterend", w); } else { form.appendChild(w); }
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 14); }
     return true;
   }
   var tries = 0, t = setInterval(function() { tries++; if (mount() || tries >= 100) clearInterval(t); }, 200);
