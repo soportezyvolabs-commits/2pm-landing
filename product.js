@@ -1,9 +1,11 @@
 // ZYVO Labs 2PM - Product Page Script
 // Cargado desde GitHub Pages
-// v3 - retoques: se elimino la pildora de "capsulas" (el producto es en polvo), fix real de
-// ancho completo en mobile para los packs y el boton AGREGAR AL CARRITO (full-bleed via JS,
-// no depende del padding del tema), se elimino el cuadro de garantia duplicado, testimonios
-// ahora tienen flechas de scroll igual que el carrusel de ingredientes.
+// v4 - fix de fondo: TODAS las secciones inyectadas (experto, comparativa, ingredientes,
+// antes/despues, testimonios, FAQs, problema, solucion, CTAs intermedios) ahora fuerzan su
+// propio ancho real de pantalla via el mismo mecanismo de full-bleed que ya usaban los packs
+// y el boton, en vez de depender del ancho de la columna angosta del tema donde quedan
+// anidadas por como se insertan en el DOM. Esto corrige que se vieran corridas/descentradas
+// hacia la derecha en mobile. Ademas se agrego un reseteo defensivo de scroll horizontal.
 
 (function(){
 
@@ -85,6 +87,18 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     setTimeout(apply, 500);
     setTimeout(apply, 1500);
   };
+  // seguro extra: si por cualquier motivo la pagina queda con scroll horizontal
+  // "pegado" (por ejemplo por un reacomodo de layout mientras cargan fuentes/imagenes),
+  // lo resetea a 0 varias veces despues de cargar.
+  function resetHScroll() {
+    if (window.innerWidth <= 768 && (window.scrollX > 0 || document.documentElement.scrollLeft > 0)) {
+      window.scrollTo(0, window.scrollY);
+      document.documentElement.scrollLeft = 0;
+      if (document.body) document.body.scrollLeft = 0;
+    }
+  }
+  [300, 800, 1500, 2500, 4000].forEach(function(ms) { setTimeout(resetHScroll, ms); });
+  window.addEventListener("load", function() { setTimeout(resetHScroll, 200); });
 })();
 
 (function() {
@@ -290,7 +304,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="ee-inner"><div class="ee-media"><div class="ee-img-wrap">' + mediaHTML + '</div></div><div class="ee-content"><span class="ee-badge">' + badgeSvg + ' Experto verificado</span><h2>Rendimiento real, avalado por profesionales</h2><blockquote class="ee-quote">"' + cfg.mensaje + '"</blockquote><p class="ee-name">' + cfg.nombre + '</p><p class="ee-role">' + cfg.profesion + '</p><p class="ee-mp">' + cfg.matricula + ' &middot; ' + cfg.matriculaDesc + '</p><ul class="ee-points">' + pointsHTML + '</ul></div></div>';
     var prob = document.getElementById("wigy-problem-section");
-    if (prob) { prob.insertAdjacentElement("beforebegin", w); }
+    if (prob) { prob.insertAdjacentElement("beforebegin", w); if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); } }
   }
   var tries = 0, t = setInterval(function() { tries++; if (document.getElementById("wigy-problem-section")) { clearInterval(t); inject(); } if (tries >= 120) clearInterval(t); }, 150);
 })();
@@ -330,6 +344,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="ct-inner"><h2>Por que elegir 2PM?</h2><p class="ct-subtitle">Una formula pensada para sostener tu rendimiento post almuerzo, sin los efectos que ya conoces del cafe o los energizantes.</p><div class="ct-table"><div class="ct-head"><div class="ct-head-cell"></div><div class="ct-brand">' + brandImg + '</div><div class="ct-head-cell"><div class="ct-other-icons">' + otrosCafeHTML + otrosEnergHTML + '</div></div></div>' + rowsHTML + '</div></div>';
     sol.insertAdjacentElement("beforebegin", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     return true;
   }
   var tries = 0, t = setInterval(function() { tries++; if (mount() || tries >= 150) clearInterval(t); }, 150);
@@ -355,6 +370,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
       setTimeout(function() { target.classList.remove("wigy-cta-highlight"); }, 2200);
     });
     table.insertAdjacentElement("afterend", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     return true;
   }
   var tries = 0, t = setInterval(function() { tries++; if (mount() || tries >= 150) clearInterval(t); }, 150);
@@ -380,6 +396,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
       setTimeout(function() { target.classList.remove("wigy-cta-highlight"); }, 2200);
     });
     faqs.insertAdjacentElement("beforebegin", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     return true;
   }
   var tries = 0, t = setInterval(function() { tries++; if (mount() || tries >= 150) clearInterval(t); }, 150);
@@ -413,6 +430,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = WRAP_ID;
     w.innerHTML = '<div class="faq-inner"><h2>Preguntas frecuentes</h2>' + itemsHTML + '</div>';
     testi.insertAdjacentElement("afterend", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     w.querySelectorAll("details").forEach(function(d) { d.addEventListener("click", function() { if (!d.open) w.querySelectorAll("details").forEach(function(x) { if (x !== d) x.removeAttribute("open"); }); }); });
     return true;
   }
@@ -439,6 +457,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var ticker = document.getElementById("wigy-post-cta-trust");
     if (ticker) { ticker.insertAdjacentElement("afterend", w); }
     else { var form = document.querySelector(".js-product-form"); if (form) form.appendChild(w); }
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
   }
   var tries = 0, t = setInterval(function() { tries++; if (document.getElementById("wigy-post-cta-trust") || tries >= 100) { clearInterval(t); inject(); } }, 150);
 })();
@@ -461,7 +480,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="sticky-inner"><h2>2PM actua en el momento exacto que lo necesitas.</h2><p class="solution-subtitle">No es un cafe. No es una bebida energetica. Es una <strong>formula funcional disenada especificamente para el bajon post almuerzo</strong>. Ingredientes que trabajan en sinergia para darte foco, energia estable y claridad mental.</p><div class="solution-features">' + featsHTML + '</div></div>';
     var prob = document.getElementById("wigy-problem-section");
-    if (prob) { prob.insertAdjacentElement("afterend", w); }
+    if (prob) { prob.insertAdjacentElement("afterend", w); if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); } }
   }
   var tries = 0, t = setInterval(function() { tries++; if (document.getElementById("wigy-problem-section")) { clearInterval(t); inject(); } if (tries >= 120) clearInterval(t); }, 150);
 })();
@@ -499,6 +518,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="ic-inner"><span class="ic-tag">Ingredientes activos</span><h2>Nuestros ingredientes</h2><p class="ic-subtitle">Formula funcional con respaldo cientifico, en las dosis justas para tu tarde.</p><p class="ic-hint">Desliza para conocerlos &rarr;</p><div class="ic-carousel"><button type="button" class="ic-arrow ic-prev" aria-label="Anterior">' + chevLeft + '</button><div class="ic-track">' + cardsHTML + '</div><button type="button" class="ic-arrow ic-next" aria-label="Siguiente">' + chevRight + '</button></div><div class="ic-dots">' + dotsHTML + '</div></div>';
     sol.insertAdjacentElement("afterend", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     var track = w.querySelector(".ic-track");
     var dots = w.querySelectorAll(".ic-dot");
     function updateDots() {
@@ -532,6 +552,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="ba-inner"><h2>Antes vs. Despues</h2><p class="ba-subtitle">Asi cambia tu tarde cuando el bajon post almuerzo deja de estar en el medio. Desliza para ver la diferencia.</p><div class="ba-slider-wrap"><div class="ba-slider" id="ba-slider-el"><img class="ba-img ba-after" src="' + despues + '" alt="Despues de tomar 2PM"><img class="ba-img ba-before" src="' + antes + '" alt="Antes de tomar 2PM"><div class="ba-divider"></div><span class="ba-label ba-label-before">ANTES</span><span class="ba-label ba-label-after">DESPUES</span><div class="ba-handle">' + handleSvg + '</div><input type="range" class="ba-range" min="0" max="100" value="50" aria-label="Comparar antes y despues"></div></div><p class="ba-caption">&larr; Desliza para comparar &rarr;</p></div>';
     testi.insertAdjacentElement("beforebegin", w);
+    if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); }
     var slider = w.querySelector("#ba-slider-el"), range = w.querySelector(".ba-range");
     if (slider && range) {
       range.addEventListener("input", function() { slider.style.setProperty("--pos", range.value + "%"); });
@@ -561,7 +582,7 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     var w = document.createElement("div"); w.id = ID;
     w.innerHTML = '<div class="ticker-item"><h2>Lo que dicen los que ya resolvieron su bajon</h2><div class="testi-verified-bar">' + verBarSvg + ' Clientes verificados</div><div class="testi-carousel"><button type="button" class="testi-arrow testi-prev" aria-label="Anterior">' + chevLeft + '</button><div class="testi-grid">' + cards + '</div><button type="button" class="testi-arrow testi-next" aria-label="Siguiente">' + chevRight + '</button></div><p style="text-align:center;font-size:11px;color:#bbb;margin-top:6px">&larr; desliza para ver &rarr;</p></div>';
     var anchor = document.getElementById("wigy-ingredients-carousel") || document.getElementById("wigy-solution-section");
-    if (anchor) { anchor.insertAdjacentElement("afterend", w); }
+    if (anchor) { anchor.insertAdjacentElement("afterend", w); if (window.WIGY_FULLBLEED) { window.WIGY_FULLBLEED(w, 0); } }
     var track = w.querySelector(".testi-grid");
     var card = track.querySelector(".testi-card");
     var step = (card ? card.offsetWidth : 160) + 10;
