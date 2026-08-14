@@ -30,8 +30,22 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
 (function() {
   if (!document.getElementById("wigy-no-hscroll-css")) {
     var noHS = document.createElement("style"); noHS.id = "wigy-no-hscroll-css";
-    noHS.innerHTML = "html,body{max-width:100%!important;overflow-x:hidden!important}";
+    // selector duplicado con distinta especificidad + regla generica para toda seccion propia,
+    // para ganarle a cualquier regla del tema que compita (incluso otra con !important) --
+    noHS.innerHTML = "html,body,html body{max-width:100vw!important;overflow-x:hidden!important}[id^='wigy-']{max-width:100vw!important;box-sizing:border-box!important}";
     document.head.appendChild(noHS);
+  }
+  // ademas del CSS, lo fuerza tambien como estilo inline (gana cualquier pulseada de especificidad)
+  document.documentElement.style.setProperty("overflow-x", "hidden", "important");
+  document.documentElement.style.setProperty("max-width", "100vw", "important");
+  if (document.body) {
+    document.body.style.setProperty("overflow-x", "hidden", "important");
+    document.body.style.setProperty("max-width", "100vw", "important");
+  } else {
+    document.addEventListener("DOMContentLoaded", function() {
+      document.body.style.setProperty("overflow-x", "hidden", "important");
+      document.body.style.setProperty("max-width", "100vw", "important");
+    });
   }
   window.WIGY_FULLBLEED = function(el, inset) {
     if (!el) return;
@@ -628,6 +642,50 @@ window.WIGY_CONFIG = {"slugURL": "https://www.zyvolabs.shop/productos/2pm-post-l
     s.innerHTML = ".js-prod-submit-form,.js-addtocart-placeholder{margin-bottom:0!important}form[action*='/cart'] .form-row.mb-4{margin-bottom:0!important}";
     document.head.appendChild(s);
   }
+})();
+
+/* ==========================================================================
+   HERRAMIENTA DE DIAGNOSTICO (oculta) - no afecta a los visitantes normales.
+   Si el scroll lateral sigue apareciendo, entra desde el celular a:
+   https://www.zyvolabs.shop/productos/2pm-post-lunch-performance-1siol/?wigy_debug=1
+   Va a marcar en rojo cualquier elemento que se pase del borde de la pantalla,
+   con un cartelito indicando cual es y cuantos px se pasa. Mandame una captura
+   de eso y arreglo exactamente ese elemento en vez de ir probando a ciegas.
+   ========================================================================== */
+(function() {
+  if (window.location.search.indexOf("wigy_debug") === -1) return;
+  function isInsideScroller(el) {
+    // si un ancestro ya tiene overflow-x:auto/scroll (carruseles a proposito, como el ticker
+    // o los carruseles de ingredientes/testimonios), no es un bug de layout - es scroll normal.
+    var p = el.parentElement;
+    while (p && p !== document.body) {
+      var ov = getComputedStyle(p).overflowX;
+      if (ov === "auto" || ov === "scroll" || ov === "hidden" || ov === "clip") return true;
+      p = p.parentElement;
+    }
+    return false;
+  }
+  function scan() {
+    var vw = document.documentElement.clientWidth;
+    var found = [];
+    document.querySelectorAll("body *").forEach(function(el) {
+      if (el.id === "wigy-debug-label" || el.closest("#wigy-debug-panel")) return;
+      if (isInsideScroller(el)) return;
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0) return;
+      if (r.right > vw + 1 || r.left < -1) {
+        el.style.outline = "2px solid red";
+        el.style.outlineOffset = "-2px";
+        var name = el.id ? "#" + el.id : (el.className && typeof el.className === "string" ? "." + el.className.split(" ")[0] : el.tagName.toLowerCase());
+        found.push(name + " | ancho:" + Math.round(r.width) + "px | se pasa " + Math.round(Math.max(0, r.right - vw, -r.left)) + "px | top:" + Math.round(r.top + window.scrollY) + "px");
+      }
+    });
+    var panel = document.createElement("div"); panel.id = "wigy-debug-panel";
+    panel.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999999;background:#c00;color:#fff;font:11px/1.5 monospace;padding:10px;max-height:40vh;overflow:auto;white-space:pre-wrap";
+    panel.textContent = found.length ? ("ELEMENTOS QUE SE PASAN DEL BORDE (ancho pantalla=" + vw + "px):\n\n" + found.join("\n")) : ("No se detecto ningun elemento pasado del borde (ancho pantalla=" + vw + "px). Si segui viendo scroll lateral, mandame captura igual.");
+    document.body.appendChild(panel);
+  }
+  setTimeout(scan, 2500);
 })();
 
 })();
